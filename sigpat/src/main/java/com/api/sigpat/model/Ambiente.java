@@ -2,11 +2,9 @@ package com.api.sigpat.model;
 
 import lombok.Getter;
 import lombok.Setter;
-
-import javax.annotation.processing.Generated;
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.UUID;
+
 
 @Entity
 @Table(name = "TB_AMBIENTE")
@@ -17,7 +15,7 @@ public class Ambiente implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private UUID id;
+    private Long id;
     @Column(nullable = false, unique = true)
     private String nome;
     @ManyToOne
