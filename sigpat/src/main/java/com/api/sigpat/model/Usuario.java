@@ -5,17 +5,20 @@ import lombok.Getter;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
-@Table(name = "TB_TIPO_ATIVO")
+@Table(name = "TB_USUARIOS")
 @Data
-public class TipoAtivo implements Serializable {
-    private static final long serialVersionUID = 1L;
+public class Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String nome;
+
+    @Column(nullable = false, unique = true)
+    private String usuário;
+    @Column(nullable = false)
+    private String senha;
 }

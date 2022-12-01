@@ -1,5 +1,6 @@
 package com.api.sigpat.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,8 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "TB_ATIVO")
-@Getter
-@Setter
+@Data
 public class Ativo implements Serializable {
     private static final long serialVersionUID = 1L;
 

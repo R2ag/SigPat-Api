@@ -1,5 +1,6 @@
 package com.api.sigpat.model;
 
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import javax.persistence.*;
@@ -8,8 +9,7 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "TB_AMBIENTE")
-@Getter
-@Setter
+@Data
 public class Ambiente implements Serializable {
     private static final long serialVersionUID = 1L;
 
