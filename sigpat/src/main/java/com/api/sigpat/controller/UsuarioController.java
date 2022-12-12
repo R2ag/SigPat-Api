@@ -1,15 +1,20 @@
 package com.api.sigpat.controller;
 
+import com.api.sigpat.DTO.AtivoDTO;
 import com.api.sigpat.DTO.UsuarioDTO;
+import com.api.sigpat.model.Ativo;
 import com.api.sigpat.model.Usuario;
 import com.api.sigpat.service.UsuarioService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -24,4 +29,44 @@ public class UsuarioController {
         BeanUtils.copyProperties(usuarioDTO, usuario);
         return ResponseEntity.status(HttpStatus.CREATED).body(usuarioService.save(usuario));
     }
+
+    @GetMapping
+    public ResponseEntity<Object> findAllUsuarios(Pageable page){
+        return ResponseEntity.ok().body(usuarioService.findAll(page));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getUsuarioById(@PathVariable(value = "id") Long id){
+        Optional<Usuario> usuarioOptional = usuarioService.findById(id);
+        if (!usuarioOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário Nao Encontrado!");
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioOptional.get());
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteUsuario(@PathVariable(value = "id")Long id){
+        Optional<Usuario> usuarioOptional = usuarioService.findById(id);
+        if (!usuarioOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuario Não Encontrado!");
+        }
+
+        usuarioService.delete(usuarioOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Deletado com Sucesso!");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateUsuario(@PathVariable(value = "id") Long id, @RequestBody @Valid UsuarioDTO usuarioDTO){
+        Optional<Usuario> usuarioOptional = usuarioService.findById(id);
+        if (!usuarioOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ativo Não Encontrado!");
+        }
+
+        var usuario = new Usuario();
+        BeanUtils.copyProperties(usuarioDTO, usuario);
+        usuario.setId(usuarioOptional.get().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(usuarioService.save(usuario));
+    }
+
 }

@@ -43,4 +43,28 @@ public class AmbienteController {
 
         return ResponseEntity.status(HttpStatus.OK).body(ambienteOptional.get());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> deleteAmbiente(@PathVariable(value = "id")Long id){
+        Optional<Ambiente> ambienteOptional = ambienteService.findById(id);
+        if (!ambienteOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ambiente Não Encontrado!");
+        }
+
+        ambienteService.delete(ambienteOptional.get());
+    return ResponseEntity.status(HttpStatus.OK).body("Deletado com Sucesso!");
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updateAmbiente(@PathVariable(value = "id") Long id, @RequestBody @Valid AmbienteDTO ambienteDTO){
+        Optional<Ambiente> ambienteOptional = ambienteService.findById(id);
+        if (!ambienteOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ambiente Não Encontrado!");
+        }
+
+        var ambiente = new Ambiente();
+        BeanUtils.copyProperties(ambienteDTO, ambiente);
+        ambiente.setId(ambienteOptional.get().getId());
+        return ResponseEntity.status(HttpStatus.OK).body(ambienteService.save(ambiente));
+    }
 }

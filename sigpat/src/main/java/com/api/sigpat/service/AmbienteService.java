@@ -28,4 +28,8 @@ public class AmbienteService {
     public Optional<Ambiente> findById(Long id) {
         return ambienteRepository.findById(id);
     }
+    @Transactional
+    public void delete(Ambiente ambiente) {
+        ambienteRepository.delete(ambiente);
+    }
 }
