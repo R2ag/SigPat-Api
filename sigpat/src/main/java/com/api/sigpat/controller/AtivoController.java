@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ public class AtivoController {
     @Autowired
     AtivoService ativoService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Object> saveAtivo(@RequestBody @Valid AtivoDTO ativoDTO){
         var ativo = new Ativo();
@@ -30,11 +32,13 @@ public class AtivoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ativoService.save(ativo));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping
     public ResponseEntity<Object> findAllAtivos(Pageable page){
         return ResponseEntity.ok().body(ativoService.findAll(page));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getAtivoById(@PathVariable(value = "id") UUID id){
         Optional<Ativo> ativoOptional = ativoService.findById(id);
@@ -45,6 +49,7 @@ public class AtivoController {
         return ResponseEntity.status(HttpStatus.OK).body(ativoOptional.get());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteAtivo(@PathVariable(value = "id")UUID id){
         Optional<Ativo> ativoOptional = ativoService.findById(id);
@@ -56,6 +61,7 @@ public class AtivoController {
         return ResponseEntity.status(HttpStatus.OK).body("Deletado com Sucesso!");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateAtivo(@PathVariable(value = "id") UUID id, @RequestBody @Valid AtivoDTO ativoDTO){
         Optional<Ativo> ativoOptional = ativoService.findById(id);

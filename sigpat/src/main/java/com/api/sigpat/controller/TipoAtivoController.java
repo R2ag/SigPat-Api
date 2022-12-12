@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -23,6 +24,7 @@ public class TipoAtivoController {
     @Autowired
     TipoAtivoService tipoAtivoService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Object> saveTipoAtivo(@RequestBody @Valid TipoAtivoDTO tipoAtivoDTO){
         var tipoAtivo = new TipoAtivo();
@@ -30,11 +32,13 @@ public class TipoAtivoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(tipoAtivoService.save(tipoAtivo));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping
     public ResponseEntity<Object> findAllTiposAtivo(Pageable page){
         return ResponseEntity.ok().body(tipoAtivoService.findAll(page));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getTipoAtivoById(@PathVariable(value = "id") Long id){
         Optional<TipoAtivo> tipoAtivoOptional = tipoAtivoService.findById(id);
@@ -44,6 +48,7 @@ public class TipoAtivoController {
         return ResponseEntity.status(HttpStatus.OK).body(tipoAtivoOptional.get());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteTipoAtivo(@PathVariable(value = "id") Long id){
         Optional<TipoAtivo> tipoAtivoOptional = tipoAtivoService.findById(id);
@@ -55,6 +60,7 @@ public class TipoAtivoController {
         return ResponseEntity.status(HttpStatus.OK).body("Deletado com Sucesso!");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateTipoAtivo(@PathVariable(value = "id") Long id, @RequestBody @Valid TipoAtivoDTO tipoAtivoDTO){
         Optional<TipoAtivo> tipoAtivoOptional = tipoAtivoService.findById(id);

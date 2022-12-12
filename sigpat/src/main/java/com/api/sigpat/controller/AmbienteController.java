@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -22,6 +23,7 @@ public class AmbienteController {
     @Autowired
     AmbienteService ambienteService;
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
     public ResponseEntity<Object> saveAmbiente(@RequestBody @Valid AmbienteDTO ambienteDTO){
         var ambiente = new Ambiente();
@@ -29,11 +31,13 @@ public class AmbienteController {
         return ResponseEntity.status(HttpStatus.CREATED).body(ambienteService.save(ambiente));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping
     public ResponseEntity<Object> findAllAmbientes(Pageable page){
         return ResponseEntity.ok().body(ambienteService.findAll(page));
     }
 
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_USER')")
     @GetMapping("/{id}")
     public ResponseEntity<Object> getAmbienteById(@PathVariable(value = "id") Long id){
         Optional<Ambiente> ambienteOptional = ambienteService.findById(id);
@@ -44,6 +48,7 @@ public class AmbienteController {
         return ResponseEntity.status(HttpStatus.OK).body(ambienteOptional.get());
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteAmbiente(@PathVariable(value = "id")Long id){
         Optional<Ambiente> ambienteOptional = ambienteService.findById(id);
@@ -55,6 +60,7 @@ public class AmbienteController {
     return ResponseEntity.status(HttpStatus.OK).body("Deletado com Sucesso!");
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateAmbiente(@PathVariable(value = "id") Long id, @RequestBody @Valid AmbienteDTO ambienteDTO){
         Optional<Ambiente> ambienteOptional = ambienteService.findById(id);
